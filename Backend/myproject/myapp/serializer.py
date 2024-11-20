@@ -26,3 +26,44 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password1'])  # Hash the password before saving
         user.save()
         return user
+    
+class LoginForm(serializers.Serializer):
+    identifier = serializers.CharField(label="Username or Email", max_length=150)
+    password = serializers.CharField(write_only=True, max_length=128)
+
+    def validate(self, data):
+        identifier = data.get("identifier")
+        password = data.get("password")
+
+        # Attempt to find the user by username or email
+        try:
+            if '@' in identifier:
+                user = CustomUser.objects.get(email=identifier)
+            else:
+                user = CustomUser.objects.get(username=identifier)
+        except CustomUser.DoesNotExist:
+            raise serializers.ValidationError("Invalid username or email.")
+
+        # Check password
+        if not user.check_password(password):
+            raise serializers.ValidationError("Invalid password.")
+
+        # Add user to validated_data
+        data['user'] = user
+        return data
+    
+class ResetForm(serializers.Serializer):
+    email = serializers.EmailField(max_length=150)
+
+    def post(self, data):
+        email = data.get('email')
+        if not email:
+            raise serializers.ValidationError("Password required")
+        try:
+            user = CustomUser.objects.get(email=email)
+        except user.DoesNotExist:
+            raise serializers.ValidationError("Invalid username or email.")
+
+        data['user'] = user
+        return data
+

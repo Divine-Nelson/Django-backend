@@ -23,13 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7cgq)uw8ayn%)h#_mq8vejz+dk8c1#7dvk+2+tz)l^f09ft3p#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.75', 'localhost']
+ALLOWED_HOSTS = ['192.168.0.75', 'localhost', '172.20.10.5', '127.0.0.1']
 
 AUTH_USER_MODEL = 'myapp.CustomUser'
 
 # Application definition
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -52,9 +55,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    
 ]
 
 CORS_ALLOW_ALLA_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    #"http://192.168.0.75:8081",  # Your React Native dev server
+   # "http://your-frontend-domain.com",  # Production domain
+   'http://192.168.0.75:8000',
+   'http://localhost:19006',
+]
 
 ROOT_URLCONF = 'myproject.urls'
 
@@ -90,7 +101,8 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -141,3 +153,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email backend settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your email provider's SMTP server
+EMAIL_PORT = 587  # Common for most email services
+EMAIL_USE_TLS = True  # Use TLS for secure email delivery
+EMAIL_HOST_USER = 'divineezeilo123@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'duky gxos eeek wwhy'  # Replace with your email password
+PASSWORD_RESET_TIMEOUT = 20 * 60
+# Optional: Default from email
+#DEFAULT_FROM_EMAIL = 'YourAppName <your-email@gmail.com>'
