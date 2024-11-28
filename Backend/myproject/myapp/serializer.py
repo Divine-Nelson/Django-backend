@@ -52,18 +52,3 @@ class LoginForm(serializers.Serializer):
         data['user'] = user
         return data
     
-class ResetForm(serializers.Serializer):
-    email = serializers.EmailField(max_length=150)
-
-    def post(self, data):
-        email = data.get('email')
-        if not email:
-            raise serializers.ValidationError("Password required")
-        try:
-            user = CustomUser.objects.get(email=email)
-        except user.DoesNotExist:
-            raise serializers.ValidationError("Invalid username or email.")
-
-        data['user'] = user
-        return data
-

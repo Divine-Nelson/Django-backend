@@ -10,6 +10,7 @@ class CustomUserTests(TestCase):
         self.client = APIClient()
         self.signup_url = "/api/signup/"
         self.login_url = "/api/login/"
+        self.reset_password_url = "/api/reset_password/"
         self.user_data = {
             "username": "testuser",
             "email": "testuser@example.com",
@@ -25,6 +26,9 @@ class CustomUserTests(TestCase):
             last_name="User",
             password="ExistingPassword123",
         )
+        self.reset_test = {
+            "email": "",
+        }
 
     def test_signup_success(self):
         response = self.client.post(self.signup_url, self.user_data)
@@ -54,6 +58,7 @@ class CustomUserTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["message"], "Login Successful!")
 
+
     def test_login_success_with_username(self):
         response = self.client.post(
             self.login_url,
@@ -77,6 +82,30 @@ class CustomUserTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("Invalid username or email.", response.data["non_field_errors"])
+
+    def test_reset_success(self):
+        response = self.client.post(
+            self.reset_password_url,
+            {"email": self.existing_user.email},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["message"], "If this email exists, a reset link has been sent.")
+
+    def test_reset_invalid_email(self):
+        response = self.client.post(
+            self.reset_password_url,
+            {"email": ""},
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_reset_nonexisting(self):
+        response = self.client.post(
+            self.reset_password_url,
+            {"email": "nonexistent@example.com"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["message"], "If this email exists, a reset link has been sent.")
+
 
 
 

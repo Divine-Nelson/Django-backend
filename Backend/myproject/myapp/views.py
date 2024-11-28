@@ -23,10 +23,30 @@ class SignupView(APIView):
     permission_classes = [AllowAny]  # Allow anyone to access this endpoint
 
     def post(self, request):
+        email = request.data.get("email")
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+
+            # Generate token and UID
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+            email_subject = "Welcome"
+            email_message = render_to_string('emails/welcome_email.txt', {
+                'user': user,
+            })
+
+            # Send email
+            send_mail(
+                subject=email_subject,
+                message=email_message,
+                from_email='your-email@gmail.com',
+                recipient_list=[email],
+                fail_silently=False,
+            )
             return Response({"message": "User created successfully!"}, status=status.HTTP_201_CREATED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
@@ -61,15 +81,23 @@ class CustomPasswordResetView(APIView):
         reset_link = request.build_absolute_uri(
             reverse('reset_password_confirm', kwargs={'uidb64': uid, 'token': token})
         )
+        email_subject = "Password Reset Request"
+        email_message = render_to_string('emails/password_reset_email.txt', {
+            'reset_link': reset_link,
+            'user': user,
+        })
 
 
         # Send email
+        # Send email
         send_mail(
-            subject="Password Reset Request",
-            message=f"Click the link to reset your password: {reset_link}",
+            subject=email_subject,
+            message=email_message,
             from_email='your-email@gmail.com',
             recipient_list=[email],
             fail_silently=False,
         )
 
         return Response({"message": "If this email exists, a reset link has been sent."}, status=status.HTTP_200_OK)
+
+        

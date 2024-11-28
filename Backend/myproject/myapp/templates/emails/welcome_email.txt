@@ -1,0 +1,16 @@
+Welcome to Recovery Lab!
+Hi {{ user.first_name }},
+
+We're thrilled to have you join our community! 🎉 At Recovery Lab, we strive to make your experience enjoyable, productive, and valuable.
+Here’s what you can do next:
+
+    Check out our amazing features.
+    Connect and engage with the community.
+
+Need any help? We're just a click away.
+"https://yourapp.com/support"Contact Support
+Welcome aboard! 🌟
+Best regards,
+The Recovery Lab Team
+&copy; 2024 Recovery Lab. All rights reserved.
+Visit our website at "https://yourapp.com" 
