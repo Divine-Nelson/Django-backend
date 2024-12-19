@@ -51,4 +51,15 @@ class LoginForm(serializers.Serializer):
         # Add user to validated_data
         data['user'] = user
         return data
-    
+
+"""class InitialForm(serializers.Serializer):
+
+    def get_initial(self, data):
+    user = data.get("user")
+    if not user:
+        return {}
+    first_name = user.first_name or ""
+    last_name = user.last_name or ""
+    initials = (first_name[0].upper() if first_name else "") + (last_name[0].upper() if last_name else "")
+    return {"initials": initials}
+"""
