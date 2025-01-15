@@ -46,4 +46,5 @@ The following dependencies are required for the project:
    pip install -r requirements.txt
    python manage.py migrate
    python manage.py runserver
-## Ignore the App folder
+
+### Ignore the App folder
