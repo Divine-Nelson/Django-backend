@@ -11,6 +11,8 @@ This repository contains the backend API for the project, built with Django and 
 
 ---
 
+## Ignore the App folder
+
 ## Dependencies
 The following dependencies are required for the project:
 
