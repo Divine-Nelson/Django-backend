@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import SignupView, LoginView, InitialsView
+from .views import SignupView, LoginView, UserDetailsView, PaymentView,CallBack
 from .views import CustomPasswordResetView
 
 
@@ -15,5 +15,7 @@ urlpatterns = [
 ),
 
     path('reset_done/', auth_views.PasswordResetCompleteView.as_view(template_name="emails/password_reset_done.html"), name="password_reset_complete"),
-    path('initial/', InitialsView.as_view(), name="initials"),
+    path('userDetails/', UserDetailsView.as_view(), name="user_details"),
+    path('create-payment/', PaymentView.as_view(), name="create-payment"),
+    path('callback-payment/', CallBack.as_view(), name="callback-payment"),
 ]

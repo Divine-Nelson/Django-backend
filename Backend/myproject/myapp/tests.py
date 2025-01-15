@@ -1,7 +1,8 @@
-import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')  # Replace 'myproject' with your project name
+#import os
+#os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')  # Replace 'myproject' with your project name
 
 from django.test import TestCase
+from rest_framework.test import APIClient, force_authenticate
 from rest_framework.test import APIClient
 from myapp.models import CustomUser
 
@@ -11,6 +12,10 @@ class CustomUserTests(TestCase):
         self.signup_url = "/api/signup/"
         self.login_url = "/api/login/"
         self.reset_password_url = "/api/reset_password/"
+        self.user_data_url = "/api/userDetails/"  # Ensure the leading slash is present
+
+        self.create_user_url="api/create-payment/"
+        self.call_back_url ="api/callback-payment/"
         self.user_data = {
             "username": "testuser",
             "email": "testuser@example.com",
@@ -106,6 +111,17 @@ class CustomUserTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["message"], "If this email exists, a reset link has been sent.")
 
+    def test_user_details_view(self):
+        # Authenticate the user
+        self.client.force_authenticate(user=self.existing_user)
+        
+        # Send a GET request to the user details endpoint
+        response = self.client.get(self.user_data_url)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["initials"], "EU")  # Based on 'Existing User'
+        self.assertEqual(response.data["full_name"], "Existing User")
+        self.assertEqual(response.data["email"], "existing@example.com")
 
 
-
+    
